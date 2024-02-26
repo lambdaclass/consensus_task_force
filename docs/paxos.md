@@ -52,13 +52,24 @@ sequenceDiagram
 
 1. The proposer chooses a new ballot number _b_ greater than the last one, and sends a _NextBallot(b)_ to some group of acceptors.
 2. Each acceptor answers the _NextBallot(b)_ in one of two ways:
-    1. if it already answered to a _NextBallot(b')_ message for _b'_ > _b_, it ignores the message
-    2. else, it responds with a _LastVote(b, v)_ message, which includes its last vote _v_ (if any)
+    1. if they already answered to a _NextBallot(b')_ message for _b'_ > _b_, they ignore the message
+    2. else, they respond with a _LastVote(b, v)_ message, which includes their last vote _v_ (if any)
 3. After receiving a _LastVote(b, v)_ message from a majority of acceptors (the _quorum_), the proposer chooses the value _d_ of the highest-numbered vote among answers (or an arbitrary one, if no votes were received), and sends a _BeginBallot(b, d)_ message to every acceptor in the quorum.
 4. Acceptors respond to a _BeginBallot(b, d)_ message with their vote _Voted(b, self)_. (or ignore it if they already received a _NextBallot(b' > b)_ message)
-5. If the proposer receives a vote from every acceptor in the quorum, it commits the decided-upon value _d_ and sends _Success(d)_ messages to **all** participants.
+5. If the proposer receives a vote from every acceptor in the quorum, they commit the decided-upon value _d_ and sends _Success(d)_ messages to **all** participants.
 6. When participants receive a _Success(d)_ message, they commit value _d_.
 
-## Multi-Paxos, or the Paxos Parliament's protocol
+## Multi-Paxos, or the Multi-Decree Parliament protocol
 
-🚧 This section is a WIP 🏗️
+This one allows reaching consensus on an ordered ledger by stacking infinite instances of the Synod protocol, so that each ledger entry corresponds to a single instance.
+
+To handle the explosion of messages, we take some shortcuts:
+
+1. The proposer sends _NextBallot(b, n)_ messages only for the earliest instance (with number _n_) that hasn't been committed.
+2. Acceptors, in turn, respond to those messages with _LastVote_ messages that include information on all higher-numbered instances (ommitting empty ones), so the proposer can find out about missing entries on their ledger. They also ask the proposer to send them any value from previous instances they missed.
+
+Note that the paper actually allows concurrent instances.
+I'm simplifying it a bit here.
+
+The paper also mentions some other problems and their solutions.
+For example, external actors querying the current state may find that it differs, but tagging each one with the latest entry allows us to find the most recent one.
