@@ -29,7 +29,7 @@ We can ensure each one of those conditions easily:
 
 ```mermaid
 ---
-title: Happy path with 1 proposer and 1 acceptor
+title: Happy path (1 proposer 1 acceptor)
 ---
 
 sequenceDiagram
