@@ -23,13 +23,13 @@ We can ensure each one of those conditions easily:
 
 1. the ballot number space is divided between participants, so two different ones cannot propose with the same number
 2. we always choose as quorum some absolute majority
-3. we ask for each quorum participant's highest-numbered vote that's lower-numbered than the new ballot, along with a promise not to accept ballots numbered less than the new one
+3. for each new ballot, we ask for each quorum participant's highest-numbered vote that's lower-numbered than the new ballot, along with a promise not to accept ballots numbered less than the new one
 
 ### How a single round looks
 
 ```mermaid
 ---
-title: Single round example (1 proposer 1 acceptor)
+title: Happy path with 1 proposer and 1 acceptor
 ---
 
 sequenceDiagram
